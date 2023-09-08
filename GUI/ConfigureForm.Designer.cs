@@ -54,6 +54,7 @@
             // CB_Webcams
             // 
             CB_Webcams.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            CB_Webcams.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             CB_Webcams.FormattingEnabled = true;
             CB_Webcams.Location = new System.Drawing.Point(6, 26);
             CB_Webcams.Name = "CB_Webcams";
@@ -103,6 +104,7 @@
             BTN_AddProfile.TabIndex = 1;
             BTN_AddProfile.Text = "➕";
             BTN_AddProfile.UseVisualStyleBackColor = true;
+            BTN_AddProfile.Click += BTN_AddProfile_Click;
             // 
             // LB_Profiles
             // 
@@ -136,7 +138,7 @@
             MinimumSize = new System.Drawing.Size(500, 560);
             Name = "ConfigureForm";
             StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            Text = "Configure webcam profiles";
+            Text = "Configure";
             Load += ConfigureForm_Load;
             groupBox1.ResumeLayout(false);
             groupBox2.ResumeLayout(false);

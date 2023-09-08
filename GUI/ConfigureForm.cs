@@ -17,6 +17,7 @@ namespace WebcamQuickProfiles.GUI
         public ConfigureForm(WebcamServices webcamServices)
         {
             this.webcamServices = webcamServices;
+
             InitializeComponent();
         }
 
@@ -28,6 +29,11 @@ namespace WebcamQuickProfiles.GUI
         private void ConfigureForm_Load(object sender, EventArgs e)
         {
             CB_Webcams.Items.AddRange(webcamServices.VideoSources.Keys.ToArray());
+        }
+
+        private void BTN_AddProfile_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

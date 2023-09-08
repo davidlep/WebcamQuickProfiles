@@ -18,12 +18,14 @@ internal class AppContext : ApplicationContext
 {
     private NotifyIcon trayIcon;
     private Container components = new Container();
-    private readonly IServiceProvider serviceProvider;
     private WebcamServices webcamServices;
+
+    private static IServiceProvider serviceProviderInstance;
+    public static IDictionary<Type, Form> FormInstances { get; set; } = new Dictionary<Type, Form>();
 
     public AppContext(IServiceProvider serviceProvider, WebcamServices webcamServices)
     {
-        this.serviceProvider = serviceProvider;
+        serviceProviderInstance = serviceProvider;
         this.webcamServices = webcamServices;
 
         Init();
@@ -70,18 +72,34 @@ internal class AppContext : ApplicationContext
         //    //p.Start();
         //});
 
-        var menuItemNewProfile = new ToolStripMenuItem("New", null, (sender, e) =>
+        var menuItemWebcamOptions = new ToolStripMenuItem("Webcam options", null, (sender, e) =>
         {
             Application.Restart();
         });
 
         var menuItemConfigure = new ToolStripMenuItem("Configure", null, (sender, e) =>
         {
-            var configureForm = serviceProvider.GetService<ConfigureForm>();
-            configureForm.Show();
+            OpenForm<ConfigureForm>();
         });
 
 
-        contextMenu.Items.AddRange(new[] { menuItemSelectProfile, menuItemConfigure, menuItemExit });
+        contextMenu.Items.AddRange(new[] { menuItemSelectProfile, menuItemConfigure, menuItemWebcamOptions, menuItemExit });
+    }
+
+    public static void OpenForm<T>() where T : Form
+    {
+        FormInstances.TryGetValue(typeof(T), out var formInstance);
+
+        if (formInstance != null)
+        {
+            formInstance.BringToFront();
+            return;
+        }
+
+        formInstance = serviceProviderInstance.GetService<T>();
+        formInstance.FormClosed += (s, e) => FormInstances[typeof(T)] = null;
+        FormInstances[typeof(T)] = formInstance;
+
+        formInstance.Show();
     }
 }
