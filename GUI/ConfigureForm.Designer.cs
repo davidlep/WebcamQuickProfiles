@@ -60,6 +60,7 @@
             CB_Webcams.Name = "CB_Webcams";
             CB_Webcams.Size = new System.Drawing.Size(437, 28);
             CB_Webcams.TabIndex = 0;
+            CB_Webcams.SelectedIndexChanged += CB_Webcams_SelectedIndexChanged;
             // 
             // groupBox2
             // 

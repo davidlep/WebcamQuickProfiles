@@ -7,16 +7,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using WebcamQuickProfiles.Webcam;
 
 namespace WebcamQuickProfiles.GUI
 {
     public partial class ConfigureForm : Form
     {
-        private readonly WebcamServices webcamServices;
+        private readonly WebcamService webcamService;
 
-        public ConfigureForm(WebcamServices webcamServices)
+        public ConfigureForm(WebcamService webcamService)
         {
-            this.webcamServices = webcamServices;
+            this.webcamService = webcamService;
 
             InitializeComponent();
         }
@@ -28,12 +29,18 @@ namespace WebcamQuickProfiles.GUI
 
         private void ConfigureForm_Load(object sender, EventArgs e)
         {
-            CB_Webcams.Items.AddRange(webcamServices.VideoSources.Keys.ToArray());
+            CB_Webcams.Items.AddRange(webcamService.VideoSources.Keys.ToArray());
+            CB_Webcams.SelectedItem = CB_Webcams.Items[0];
         }
 
         private void BTN_AddProfile_Click(object sender, EventArgs e)
         {
+            AppContext.OpenForm<ProfileEditForm>();
+        }
 
+        private void CB_Webcams_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            this.webcamService.CurrentVideoSourceId = CB_Webcams.SelectedItem.ToString();
         }
     }
 }

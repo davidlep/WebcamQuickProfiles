@@ -1,16 +1,10 @@
-﻿using AForge.Video.DirectShow;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using WebcamQuickProfiles.AForge;
 using WebcamQuickProfiles.GUI;
+using WebcamQuickProfiles.Webcam;
 
 namespace WebcamQuickProfiles;
 
@@ -18,15 +12,15 @@ internal class AppContext : ApplicationContext
 {
     private NotifyIcon trayIcon;
     private Container components = new Container();
-    private WebcamServices webcamServices;
+    private WebcamService webcamService;
 
     private static IServiceProvider serviceProviderInstance;
     public static IDictionary<Type, Form> FormInstances { get; set; } = new Dictionary<Type, Form>();
 
-    public AppContext(IServiceProvider serviceProvider, WebcamServices webcamServices)
+    public AppContext(IServiceProvider serviceProvider, WebcamService webcamService)
     {
         serviceProviderInstance = serviceProvider;
-        this.webcamServices = webcamServices;
+        this.webcamService = webcamService;
 
         Init();
         
@@ -45,9 +39,12 @@ internal class AppContext : ApplicationContext
             Visible = true,
         };
         
-        webcamServices.Init();
+        webcamService.Init();
 
         //trayIcon.ShowBalloonTip(3000, "Test", "Body", ToolTipIcon.Info);
+
+        //TEMP testing
+        OpenForm<ConfigureForm>();
     }
 
     void ConfigureTrayMenu(ContextMenuStrip contextMenu)

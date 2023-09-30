@@ -1,8 +1,10 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using WebcamQuickProfiles.GUI;
+using WebcamQuickProfiles.Webcam;
 
 namespace WebcamQuickProfiles;
 
@@ -19,6 +21,9 @@ internal static class Program
 
         var host = CreateHostBuilder().Build();
 
+        Task.Run(() => host.Services.GetService<WebcamMonitor>().MonitorWebRunning());
+
+
         Application.Run(host.Services.GetRequiredService<AppContext>());
     }
 
@@ -28,8 +33,10 @@ internal static class Program
             .ConfigureServices((context, services) => 
             {
                 services.AddTransient<AppContext>();
-                services.AddSingleton<WebcamServices>();
+                services.AddSingleton<WebcamService>();
                 services.AddTransient<ConfigureForm>();
+                services.AddTransient<ProfileEditForm>();
+                services.AddTransient<WebcamMonitor>();
             });
     }
 }
