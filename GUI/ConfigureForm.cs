@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using WebcamQuickProfiles.Configuration;
+using WebcamQuickProfiles.Profiles;
 using WebcamQuickProfiles.Webcam;
 
 namespace WebcamQuickProfiles.GUI
@@ -14,12 +16,19 @@ namespace WebcamQuickProfiles.GUI
     public partial class ConfigureForm : Form
     {
         private readonly WebcamService webcamService;
+        private readonly ProfilesService profilesService;
+        private IList<ProfileEntry> ProfilesEntries;
 
-        public ConfigureForm(WebcamService webcamService)
+        public ConfigureForm(
+            WebcamService webcamService,
+            ProfilesService profilesService)
         {
             this.webcamService = webcamService;
+            this.profilesService = profilesService;
 
             InitializeComponent();
+
+            RefreshProfiles();
         }
 
         private void BTN_Close_Click(object sender, EventArgs e)
@@ -27,20 +36,58 @@ namespace WebcamQuickProfiles.GUI
             this.Close();
         }
 
-        private void ConfigureForm_Load(object sender, EventArgs e)
-        {
-            CB_Webcams.Items.AddRange(webcamService.VideoSources.Keys.ToArray());
-            CB_Webcams.SelectedItem = CB_Webcams.Items[0];
-        }
-
         private void BTN_AddProfile_Click(object sender, EventArgs e)
         {
-            AppContext.OpenForm<ProfileEditForm>();
+            var formInstance = AppContext.InstanciateForm<ProfileEditForm>();
+            formInstance.FormClosed += (s, e) => RefreshProfiles();
+            AppContext.OpenForm(formInstance);
         }
 
-        private void CB_Webcams_SelectedIndexChanged(object sender, EventArgs e)
+        private void RefreshProfiles()
         {
-            this.webcamService.CurrentVideoSourceId = CB_Webcams.SelectedItem.ToString();
+            ProfilesEntries = profilesService.GetAllProfileEntries();
+
+            LB_Profiles.Items.Clear();
+            LB_Profiles.Items.AddRange(ProfilesEntries.Select(x => x.Name).ToArray());
+
+            UpdateGUI();
+        }
+
+        private void BTN_EditProfile_Click(object sender, EventArgs e)
+        {
+            EditSelectedProfile();
+        }
+
+        private void LB_Profiles_Leave(object sender, EventArgs e)
+        {
+            UpdateGUI();
+        }
+
+        private void LB_Profiles_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            UpdateGUI();
+        }
+
+        private void UpdateGUI()
+        {
+            BTN_EditProfile.Enabled = LB_Profiles.SelectedItem != null;
+            BTN_DeleteProfile.Enabled = LB_Profiles.SelectedItem != null;
+        }
+
+        private void LB_Profiles_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            EditSelectedProfile();
+        }
+
+        private void EditSelectedProfile()
+        {
+            var selectedProfileId = ProfilesEntries.ElementAt(LB_Profiles.SelectedIndex).Id;
+            var selectedProfile = this.profilesService.LoadProfile(selectedProfileId);
+
+            var formInstance = AppContext.InstanciateForm<ProfileEditForm>();
+            formInstance.FormProfile = selectedProfile;
+            formInstance.FormClosed += (s, e) => RefreshProfiles();
+            AppContext.OpenForm(formInstance);
         }
     }
 }

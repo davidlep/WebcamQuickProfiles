@@ -3,6 +3,7 @@ using Microsoft.Extensions.Hosting;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using WebcamQuickProfiles.Configuration;
 using WebcamQuickProfiles.GUI;
 using WebcamQuickProfiles.Webcam;
 
@@ -37,6 +38,7 @@ internal static class Program
                 services.AddTransient<ConfigureForm>();
                 services.AddTransient<ProfileEditForm>();
                 services.AddTransient<WebcamMonitor>();
+                services.AddTransient<ProfilesService>();
             });
     }
 }

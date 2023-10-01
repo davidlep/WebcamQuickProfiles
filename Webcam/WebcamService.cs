@@ -13,18 +13,10 @@ namespace WebcamQuickProfiles.Webcam
     public class WebcamService
     {
         public IDictionary<string, ExtendedVideoCaptureDevice> VideoSources { get; set; }
-        public string CurrentVideoSourceId { get; set; }
-
-        public WebcamSettings SavedSettingsTEMP { get; set; }
 
         public WebcamService()
         {
 
-        }
-
-        public ExtendedVideoCaptureDevice GetCurrentVideoSource()
-        {
-            return VideoSources[CurrentVideoSourceId];
         }
 
         public void Init()
@@ -33,7 +25,8 @@ namespace WebcamQuickProfiles.Webcam
 
             if (videoDevices.Count == 0)
             {
-                throw new Exception("No video devices found.");
+                VideoSources = new Dictionary<string, ExtendedVideoCaptureDevice>();
+                return;
             }
 
 
@@ -268,12 +261,10 @@ namespace WebcamQuickProfiles.Webcam
 
         public bool IsWebcamInUse()
         {
-            if (IsWebcamInUse(@"SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\webcam"))
-            {
-                return true;
-            }
+            //https://stackoverflow.com/questions/63650097/get-current-state-of-webcam-in-c-sharp
 
-            return IsWebcamInUse(@"SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\webcam\NonPackaged");
+            return IsWebcamInUse(@"SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\webcam") ||
+                    IsWebcamInUse(@"SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\webcam\NonPackaged");
         }
 
         private bool IsWebcamInUse(string registryPath)

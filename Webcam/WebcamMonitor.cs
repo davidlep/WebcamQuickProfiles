@@ -1,10 +1,4 @@
-﻿using Microsoft.Win32;
-using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Management;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace WebcamQuickProfiles.Webcam
 {
@@ -27,8 +21,7 @@ namespace WebcamQuickProfiles.Webcam
                 if (!WebcamRunning && this.webcamService.IsWebcamInUse())
                 {
                     WebcamRunning = true;
-                    var currentVideoSource = webcamService.GetCurrentVideoSource();
-                    webcamService.ApplyWebcamSettings(currentVideoSource, webcamService.SavedSettingsTEMP);
+                    //Load profile
                     continue;
                 }
 

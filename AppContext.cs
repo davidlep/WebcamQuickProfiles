@@ -69,34 +69,37 @@ internal class AppContext : ApplicationContext
         //    //p.Start();
         //});
 
-        var menuItemWebcamOptions = new ToolStripMenuItem("Webcam options", null, (sender, e) =>
-        {
-            Application.Restart();
-        });
-
         var menuItemConfigure = new ToolStripMenuItem("Configure", null, (sender, e) =>
         {
             OpenForm<ConfigureForm>();
         });
 
 
-        contextMenu.Items.AddRange(new[] { menuItemSelectProfile, menuItemConfigure, menuItemWebcamOptions, menuItemExit });
+        contextMenu.Items.AddRange(new[] { menuItemSelectProfile, menuItemConfigure, menuItemExit });
     }
 
-    public static void OpenForm<T>() where T : Form
+    public static void OpenForm<T>(T formInstance = null) where T : Form
     {
-        FormInstances.TryGetValue(typeof(T), out var formInstance);
+        FormInstances.TryGetValue(typeof(T), out var existingFormInstance);
 
-        if (formInstance != null)
+        if (existingFormInstance != null)
         {
-            formInstance.BringToFront();
+            existingFormInstance.BringToFront();
             return;
         }
 
-        formInstance = serviceProviderInstance.GetService<T>();
+        if (formInstance is null)
+        {
+            formInstance = InstanciateForm<T>();
+        }
+
         formInstance.FormClosed += (s, e) => FormInstances[typeof(T)] = null;
         FormInstances[typeof(T)] = formInstance;
+        formInstance.ShowDialog();
+    }
 
-        formInstance.Show();
+    public static T InstanciateForm<T>() where T : Form
+    {
+        return serviceProviderInstance.GetService<T>();
     }
 }
