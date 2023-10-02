@@ -71,6 +71,7 @@
             BTN_DeleteProfile.TabIndex = 2;
             BTN_DeleteProfile.Text = "🗑️";
             BTN_DeleteProfile.UseVisualStyleBackColor = true;
+            BTN_DeleteProfile.Click += BTN_DeleteProfile_Click;
             // 
             // BTN_AddProfile
             // 

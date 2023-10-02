@@ -2,7 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows.Forms;
+using WebcamQuickProfiles.Configuration;
 using WebcamQuickProfiles.GUI;
 using WebcamQuickProfiles.Webcam;
 
@@ -12,16 +14,19 @@ internal class AppContext : ApplicationContext
 {
     private NotifyIcon trayIcon;
     private Container components = new Container();
-    private WebcamService webcamService;
-
+    private readonly WebcamService webcamService;
+    private readonly ProfilesService profilesService;
     private static IServiceProvider serviceProviderInstance;
     public static IDictionary<Type, Form> FormInstances { get; set; } = new Dictionary<Type, Form>();
 
-    public AppContext(IServiceProvider serviceProvider, WebcamService webcamService)
+    public AppContext(
+        IServiceProvider serviceProvider, 
+        WebcamService webcamService, 
+        ProfilesService profilesService)
     {
         serviceProviderInstance = serviceProvider;
         this.webcamService = webcamService;
-
+        this.profilesService = profilesService;
         Init();
         
     }
@@ -55,27 +60,31 @@ internal class AppContext : ApplicationContext
             Application.Exit();
         });
 
-        var menuItemSelectProfile = new ToolStripMenuItem("Select", null);
+        var menuItemSelectProfile = new ToolStripMenuItem("Profiles", null);
 
-        //menuItemSelectProfile.DropDownItems.AddRange(new[] { menuItemWebcam, menuItemProfiles });
-
-        //var menuItemEditProfiles = new ToolStripMenuItem("Edit", null, (sender, e) =>
-        //{
-        //    //var p = new Process();
-        //    //p.StartInfo = new ProcessStartInfo(Settings.FileName)
-        //    //{
-        //    //    UseShellExecute = true
-        //    //};
-        //    //p.Start();
-        //});
+        menuItemSelectProfile.DropDownItems.AddRange(GetProfilesMenuItems().ToArray());
 
         var menuItemConfigure = new ToolStripMenuItem("Configure", null, (sender, e) =>
         {
             OpenForm<ConfigureForm>();
+            //TODO on form close, update profile tool strip menu
         });
 
 
         contextMenu.Items.AddRange(new[] { menuItemSelectProfile, menuItemConfigure, menuItemExit });
+    }
+
+    private IEnumerable<ToolStripMenuItem> GetProfilesMenuItems()
+    {
+        var profiles = profilesService.GetAllProfileEntries();
+
+        foreach (var profile in profiles)
+        {
+            yield return new ToolStripMenuItem(profile.Name, null, (sender, e) =>
+            {
+                
+            });
+        }
     }
 
     public static void OpenForm<T>(T formInstance = null) where T : Form

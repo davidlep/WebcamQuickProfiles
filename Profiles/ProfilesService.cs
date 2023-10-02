@@ -40,6 +40,16 @@ namespace WebcamQuickProfiles.Configuration
             return null;
         }
 
+        public void DeleteProfile(Guid profileId)
+        {
+            string profileFilePath = Path.Combine(ProfilesFolderPath, $"{profileId}.json");
+
+            if (File.Exists(profileFilePath))
+            {
+                File.Delete(profileFilePath);
+            }
+        }
+
         public IList<ProfileEntry> GetAllProfileEntries()
         {
             if (!Directory.Exists(ProfilesFolderPath))

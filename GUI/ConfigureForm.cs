@@ -28,7 +28,7 @@ namespace WebcamQuickProfiles.GUI
 
             InitializeComponent();
 
-            RefreshProfiles();
+            RefreshProfilesUIState();
         }
 
         private void BTN_Close_Click(object sender, EventArgs e)
@@ -39,18 +39,18 @@ namespace WebcamQuickProfiles.GUI
         private void BTN_AddProfile_Click(object sender, EventArgs e)
         {
             var formInstance = AppContext.InstanciateForm<ProfileEditForm>();
-            formInstance.FormClosed += (s, e) => RefreshProfiles();
+            formInstance.FormClosed += (s, e) => RefreshProfilesUIState();
             AppContext.OpenForm(formInstance);
         }
 
-        private void RefreshProfiles()
+        private void RefreshProfilesUIState()
         {
             ProfilesEntries = profilesService.GetAllProfileEntries();
 
             LB_Profiles.Items.Clear();
             LB_Profiles.Items.AddRange(ProfilesEntries.Select(x => x.Name).ToArray());
 
-            UpdateGUI();
+            RefreshEditUIState();
         }
 
         private void BTN_EditProfile_Click(object sender, EventArgs e)
@@ -60,15 +60,15 @@ namespace WebcamQuickProfiles.GUI
 
         private void LB_Profiles_Leave(object sender, EventArgs e)
         {
-            UpdateGUI();
+            RefreshEditUIState();
         }
 
         private void LB_Profiles_SelectedIndexChanged(object sender, EventArgs e)
         {
-            UpdateGUI();
+            RefreshEditUIState();
         }
 
-        private void UpdateGUI()
+        private void RefreshEditUIState()
         {
             BTN_EditProfile.Enabled = LB_Profiles.SelectedItem != null;
             BTN_DeleteProfile.Enabled = LB_Profiles.SelectedItem != null;
@@ -81,13 +81,42 @@ namespace WebcamQuickProfiles.GUI
 
         private void EditSelectedProfile()
         {
-            var selectedProfileId = ProfilesEntries.ElementAt(LB_Profiles.SelectedIndex).Id;
+            var selectedIndex = LB_Profiles.SelectedIndex;
+
+            if (selectedIndex == -1)
+                return;
+
+            var selectedProfileId = ProfilesEntries.ElementAt(selectedIndex).Id;
             var selectedProfile = this.profilesService.LoadProfile(selectedProfileId);
 
             var formInstance = AppContext.InstanciateForm<ProfileEditForm>();
             formInstance.FormProfile = selectedProfile;
-            formInstance.FormClosed += (s, e) => RefreshProfiles();
+            formInstance.FormClosed += (s, e) => RefreshProfilesUIState();
             AppContext.OpenForm(formInstance);
+        }
+
+        private void BTN_DeleteProfile_Click(object sender, EventArgs e)
+        {
+            var selectedIndex = LB_Profiles.SelectedIndex;
+
+            if (selectedIndex == -1)
+                return;
+
+            var selectedProfileId = ProfilesEntries.ElementAt(selectedIndex).Id;
+            var selectedProfile = this.profilesService.LoadProfile(selectedProfileId);
+
+            var confirmResult = MessageBox.Show(
+                $"Are you sure to delete the profile {selectedProfile.Name}",
+                "Confirm delete",
+                MessageBoxButtons.YesNo, 
+                MessageBoxIcon.Warning);
+
+            if (confirmResult == DialogResult.No)
+                return;
+
+            this.profilesService.DeleteProfile(selectedProfileId);
+
+            RefreshProfilesUIState();
         }
     }
 }
