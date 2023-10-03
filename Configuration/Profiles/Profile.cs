@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WebcamQuickProfiles.Webcam;
 
-namespace WebcamQuickProfiles.Profiles
+namespace WebcamQuickProfiles.Configuration.Profiles
 {
     public class Profile
     {

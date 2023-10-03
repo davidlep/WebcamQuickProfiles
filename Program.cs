@@ -3,7 +3,8 @@ using Microsoft.Extensions.Hosting;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using WebcamQuickProfiles.Configuration;
+using WebcamQuickProfiles.Configuration.Profiles;
+using WebcamQuickProfiles.Configuration.Settings;
 using WebcamQuickProfiles.GUI;
 using WebcamQuickProfiles.Webcam;
 
@@ -22,7 +23,7 @@ internal static class Program
 
         var host = CreateHostBuilder().Build();
 
-        Task.Run(() => host.Services.GetService<WebcamMonitor>().MonitorWebRunning());
+        Task.Run(() => host.Services.GetService<WebcamMonitor>().MonitorWebcamRunning());
 
 
         Application.Run(host.Services.GetRequiredService<AppContext>());
@@ -39,6 +40,8 @@ internal static class Program
                 services.AddTransient<ProfileEditForm>();
                 services.AddTransient<WebcamMonitor>();
                 services.AddTransient<ProfilesService>();
+                services.AddSingleton<FormsManager>();
+                services.AddSingleton<SettingsService>();
             });
     }
 }

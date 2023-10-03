@@ -35,6 +35,7 @@
             GB_Webcam = new System.Windows.Forms.GroupBox();
             CB_Webcams = new System.Windows.Forms.ComboBox();
             GB_ProfileName = new System.Windows.Forms.GroupBox();
+            BTN_OpenCameraApp = new System.Windows.Forms.Button();
             GB_Webcam.SuspendLayout();
             GB_ProfileName.SuspendLayout();
             SuspendLayout();
@@ -58,7 +59,7 @@
             // 
             // BTN_Close
             // 
-            BTN_Close.Location = new System.Drawing.Point(401, 228);
+            BTN_Close.Location = new System.Drawing.Point(401, 277);
             BTN_Close.Name = "BTN_Close";
             BTN_Close.Size = new System.Drawing.Size(94, 29);
             BTN_Close.TabIndex = 3;
@@ -68,7 +69,7 @@
             // 
             // BTN_Save
             // 
-            BTN_Save.Location = new System.Drawing.Point(192, 228);
+            BTN_Save.Location = new System.Drawing.Point(192, 277);
             BTN_Save.Name = "BTN_Save";
             BTN_Save.Size = new System.Drawing.Size(203, 29);
             BTN_Save.TabIndex = 4;
@@ -107,11 +108,22 @@
             GB_ProfileName.TabStop = false;
             GB_ProfileName.Text = "Profile name";
             // 
+            // BTN_OpenCameraApp
+            // 
+            BTN_OpenCameraApp.Location = new System.Drawing.Point(12, 277);
+            BTN_OpenCameraApp.Name = "BTN_OpenCameraApp";
+            BTN_OpenCameraApp.Size = new System.Drawing.Size(68, 29);
+            BTN_OpenCameraApp.TabIndex = 8;
+            BTN_OpenCameraApp.Text = "🎥";
+            BTN_OpenCameraApp.UseVisualStyleBackColor = true;
+            BTN_OpenCameraApp.Click += BTN_OpenCameraApp_Click;
+            // 
             // ProfileEditForm
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(507, 269);
+            ClientSize = new System.Drawing.Size(507, 318);
+            Controls.Add(BTN_OpenCameraApp);
             Controls.Add(GB_ProfileName);
             Controls.Add(GB_Webcam);
             Controls.Add(BTN_Save);
@@ -138,5 +150,6 @@
         private System.Windows.Forms.GroupBox GB_Webcam;
         private System.Windows.Forms.ComboBox CB_Webcams;
         private System.Windows.Forms.GroupBox GB_ProfileName;
+        private System.Windows.Forms.Button BTN_OpenCameraApp;
     }
 }

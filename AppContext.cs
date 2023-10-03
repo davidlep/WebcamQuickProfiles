@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
-using WebcamQuickProfiles.Configuration;
+using WebcamQuickProfiles.Configuration.Profiles;
+using WebcamQuickProfiles.Configuration.Settings;
 using WebcamQuickProfiles.GUI;
 using WebcamQuickProfiles.Webcam;
 
@@ -16,40 +17,43 @@ internal class AppContext : ApplicationContext
     private Container components = new Container();
     private readonly WebcamService webcamService;
     private readonly ProfilesService profilesService;
-    private static IServiceProvider serviceProviderInstance;
-    public static IDictionary<Type, Form> FormInstances { get; set; } = new Dictionary<Type, Form>();
+    private readonly FormsManager formsManager;
+    private readonly SettingsService settingsService;
+
+    public ToolStripMenuItem[] ProfileMenuItems { get; set; }
 
     public AppContext(
-        IServiceProvider serviceProvider, 
         WebcamService webcamService, 
-        ProfilesService profilesService)
+        ProfilesService profilesService,
+        FormsManager formsManager,
+        SettingsService settingsService)
     {
-        serviceProviderInstance = serviceProvider;
         this.webcamService = webcamService;
         this.profilesService = profilesService;
-        Init();
+        this.formsManager = formsManager;
+        this.settingsService = settingsService;
         
+        Init();
     }
 
     private void Init()
     {
+        settingsService.LoadSettings();
+
         var contextMenu = new ContextMenuStrip();
         this.ConfigureTrayMenu(contextMenu);
 
-        trayIcon = new NotifyIcon(components)
-        {
-            ContextMenuStrip = contextMenu,
-            Icon = new System.Drawing.Icon("icon.ico"),
-            Text = $"Webcam quick profiles",
-            Visible = true,
-        };
-        
         webcamService.Init();
 
-        //trayIcon.ShowBalloonTip(3000, "Test", "Body", ToolTipIcon.Info);
+        //trayIcon = new NotifyIcon(components)
+        //{
+        //    ContextMenuStrip = contextMenu,
+        //    Icon = new System.Drawing.Icon("icon.ico"),
+        //    Text = $"Webcam quick profiles",
+        //    Visible = true,
+        //};
 
-        //TEMP testing
-        OpenForm<ConfigureForm>();
+        //trayIcon.ShowBalloonTip(3000, "Test", "Body", ToolTipIcon.Info);
     }
 
     void ConfigureTrayMenu(ContextMenuStrip contextMenu)
@@ -62,11 +66,13 @@ internal class AppContext : ApplicationContext
 
         var menuItemSelectProfile = new ToolStripMenuItem("Profiles", null);
 
-        menuItemSelectProfile.DropDownItems.AddRange(GetProfilesMenuItems().ToArray());
+        ProfileMenuItems = GetProfilesMenuItems().ToArray();
+
+        menuItemSelectProfile.DropDownItems.AddRange(ProfileMenuItems);
 
         var menuItemConfigure = new ToolStripMenuItem("Configure", null, (sender, e) =>
         {
-            OpenForm<ConfigureForm>();
+            formsManager.ShowForm<ConfigureForm>();
             //TODO on form close, update profile tool strip menu
         });
 
@@ -77,38 +83,30 @@ internal class AppContext : ApplicationContext
     private IEnumerable<ToolStripMenuItem> GetProfilesMenuItems()
     {
         var profiles = profilesService.GetAllProfileEntries();
+        var settings = settingsService.GetSettings();
 
         foreach (var profile in profiles)
         {
-            yield return new ToolStripMenuItem(profile.Name, null, (sender, e) =>
+            var menuItem = new ToolStripMenuItem(profile.Name, null, (sender, e) =>
             {
-                
+                var toolStripMenuItem = sender as ToolStripMenuItem;
+                settingsService.UpdateCurrentProfileId(profile.Id);
+                ResetCheckedMenuItemsUIState();
+                toolStripMenuItem.Checked = true;
             });
+
+            if (settings.CurrentProfileId == profile.Id)
+            {
+                menuItem.Checked = true;
+            }
+
+            yield return menuItem;
         }
     }
 
-    public static void OpenForm<T>(T formInstance = null) where T : Form
+    private void ResetCheckedMenuItemsUIState()
     {
-        FormInstances.TryGetValue(typeof(T), out var existingFormInstance);
-
-        if (existingFormInstance != null)
-        {
-            existingFormInstance.BringToFront();
-            return;
-        }
-
-        if (formInstance is null)
-        {
-            formInstance = InstanciateForm<T>();
-        }
-
-        formInstance.FormClosed += (s, e) => FormInstances[typeof(T)] = null;
-        FormInstances[typeof(T)] = formInstance;
-        formInstance.ShowDialog();
-    }
-
-    public static T InstanciateForm<T>() where T : Form
-    {
-        return serviceProviderInstance.GetService<T>();
+        foreach (var menuItem in ProfileMenuItems)
+            menuItem.Checked = false;
     }
 }

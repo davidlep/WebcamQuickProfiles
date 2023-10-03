@@ -7,8 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using WebcamQuickProfiles.Configuration;
-using WebcamQuickProfiles.Profiles;
+using WebcamQuickProfiles.Configuration.Profiles;
 using WebcamQuickProfiles.Webcam;
 
 namespace WebcamQuickProfiles.GUI
@@ -17,15 +16,17 @@ namespace WebcamQuickProfiles.GUI
     {
         private readonly WebcamService webcamService;
         private readonly ProfilesService profilesService;
+        private readonly FormsManager formsManager;
         private IList<ProfileEntry> ProfilesEntries;
 
         public ConfigureForm(
             WebcamService webcamService,
-            ProfilesService profilesService)
+            ProfilesService profilesService,
+            FormsManager formsManager)
         {
             this.webcamService = webcamService;
             this.profilesService = profilesService;
-
+            this.formsManager = formsManager;
             InitializeComponent();
 
             RefreshProfilesUIState();
@@ -38,9 +39,9 @@ namespace WebcamQuickProfiles.GUI
 
         private void BTN_AddProfile_Click(object sender, EventArgs e)
         {
-            var formInstance = AppContext.InstanciateForm<ProfileEditForm>();
-            formInstance.FormClosed += (s, e) => RefreshProfilesUIState();
-            AppContext.OpenForm(formInstance);
+            var editform = formsManager.NewForm<ProfileEditForm>();
+            editform.FormClosed += (s, e) => RefreshProfilesUIState();
+            formsManager.ShowForm(editform);
         }
 
         private void RefreshProfilesUIState()
@@ -89,10 +90,10 @@ namespace WebcamQuickProfiles.GUI
             var selectedProfileId = ProfilesEntries.ElementAt(selectedIndex).Id;
             var selectedProfile = this.profilesService.LoadProfile(selectedProfileId);
 
-            var formInstance = AppContext.InstanciateForm<ProfileEditForm>();
+            var formInstance = formsManager.NewForm<ProfileEditForm>();
             formInstance.FormProfile = selectedProfile;
             formInstance.FormClosed += (s, e) => RefreshProfilesUIState();
-            AppContext.OpenForm(formInstance);
+            formsManager.ShowForm(formInstance);
         }
 
         private void BTN_DeleteProfile_Click(object sender, EventArgs e)
@@ -108,7 +109,7 @@ namespace WebcamQuickProfiles.GUI
             var confirmResult = MessageBox.Show(
                 $"Are you sure to delete the profile {selectedProfile.Name}",
                 "Confirm delete",
-                MessageBoxButtons.YesNo, 
+                MessageBoxButtons.YesNo,
                 MessageBoxIcon.Warning);
 
             if (confirmResult == DialogResult.No)

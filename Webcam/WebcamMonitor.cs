@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using WebcamQuickProfiles.GUI;
 
 namespace WebcamQuickProfiles.Webcam
 {
@@ -6,13 +7,17 @@ namespace WebcamQuickProfiles.Webcam
     {
         private bool WebcamRunning = false;
         private readonly WebcamService webcamService;
+        private readonly FormsManager formsManager;
 
-        public WebcamMonitor(WebcamService webcamService)
+        public WebcamMonitor(
+            WebcamService webcamService,
+            FormsManager formsManager)
         {
             this.webcamService = webcamService;
+            this.formsManager = formsManager;
         }
 
-        public async Task MonitorWebRunning()
+        public async Task MonitorWebcamRunning()
         {
             while (true)
             {
@@ -20,6 +25,11 @@ namespace WebcamQuickProfiles.Webcam
 
                 if (!WebcamRunning && this.webcamService.IsWebcamInUse())
                 {
+                    if (formsManager.IsFormOpen<ProfileEditForm>())
+                    {
+                        continue;
+                    }
+
                     WebcamRunning = true;
                     //Load profile
                     continue;

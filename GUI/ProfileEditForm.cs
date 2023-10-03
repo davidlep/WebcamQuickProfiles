@@ -3,13 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using WebcamQuickProfiles.Configuration;
-using WebcamQuickProfiles.Profiles;
+using WebcamQuickProfiles.Configuration.Profiles;
 using WebcamQuickProfiles.Webcam;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -48,6 +48,17 @@ namespace WebcamQuickProfiles.GUI
 
         private void BTN_Save_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrWhiteSpace(TB_ProfileName.Text))
+            {
+                MessageBox.Show(
+                $"Profile name cannot be empty",
+                "Validation",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Warning);
+
+                return;
+            }
+
             if (FormProfile is null)
             {
                 FormProfile = new Profile
@@ -89,6 +100,17 @@ namespace WebcamQuickProfiles.GUI
         {
             CB_Webcams.SelectedIndex = CB_Webcams.FindStringExact(FormProfile.VideoSourceId);
             TB_ProfileName.Text = FormProfile.Name;
+        }
+
+        private void BTN_OpenCameraApp_Click(object sender, EventArgs e)
+        {
+            var ps = new ProcessStartInfo("microsoft.windows.camera:")
+            {
+                UseShellExecute = true,
+                Verb = "open"
+            };
+
+            Process.Start(ps);
         }
     }
 }

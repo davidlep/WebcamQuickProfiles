@@ -3,20 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
-using WebcamQuickProfiles.Profiles;
 
-namespace WebcamQuickProfiles.Configuration
+namespace WebcamQuickProfiles.Configuration.Profiles
 {
     public class ProfilesService
     {
-        public static string LocalAppDataFolder => $"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\\WebcamQuickProfiles";
-        public static string ProfilesFolderPath = Path.Combine(LocalAppDataFolder, "Profiles");
-
         public void SaveProfile(Profile profile)
         {
-            Directory.CreateDirectory(ProfilesFolderPath);
+            Directory.CreateDirectory(Paths.ProfilesFolderPath);
 
-            var profileFilePath = Path.Combine(ProfilesFolderPath, $"{profile.Id}.json");
+            var profileFilePath = Path.Combine(Paths.ProfilesFolderPath, $"{profile.Id}.json");
             var jsonOptions = new JsonSerializerOptions
             {
                 WriteIndented = true
@@ -29,7 +25,7 @@ namespace WebcamQuickProfiles.Configuration
 
         public Profile LoadProfile(Guid profileId)
         {
-            string profileFilePath = Path.Combine(ProfilesFolderPath, $"{profileId}.json");
+            string profileFilePath = Path.Combine(Paths.ProfilesFolderPath, $"{profileId}.json");
 
             if (File.Exists(profileFilePath))
             {
@@ -42,7 +38,7 @@ namespace WebcamQuickProfiles.Configuration
 
         public void DeleteProfile(Guid profileId)
         {
-            string profileFilePath = Path.Combine(ProfilesFolderPath, $"{profileId}.json");
+            string profileFilePath = Path.Combine(Paths.ProfilesFolderPath, $"{profileId}.json");
 
             if (File.Exists(profileFilePath))
             {
@@ -52,14 +48,14 @@ namespace WebcamQuickProfiles.Configuration
 
         public IList<ProfileEntry> GetAllProfileEntries()
         {
-            if (!Directory.Exists(ProfilesFolderPath))
+            if (!Directory.Exists(Paths.ProfilesFolderPath))
             {
                 return null;
             }
 
             var profileEntries = new List<ProfileEntry>();
 
-            string[] profileFiles = Directory.GetFiles(ProfilesFolderPath, "*.json");
+            string[] profileFiles = Directory.GetFiles(Paths.ProfilesFolderPath, "*.json");
 
             foreach (string profileFile in profileFiles)
             {
