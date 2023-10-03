@@ -43,15 +43,15 @@ internal class AppContext : ApplicationContext
         var contextMenu = new ContextMenuStrip();
         this.ConfigureTrayMenu(contextMenu);
 
-        webcamService.Init();
+        trayIcon = new NotifyIcon(components)
+        {
+            ContextMenuStrip = contextMenu,
+            Icon = new System.Drawing.Icon("icon.ico"),
+            Text = $"Webcam quick profiles",
+            Visible = true,
+        };
 
-        //trayIcon = new NotifyIcon(components)
-        //{
-        //    ContextMenuStrip = contextMenu,
-        //    Icon = new System.Drawing.Icon("icon.ico"),
-        //    Text = $"Webcam quick profiles",
-        //    Visible = true,
-        //};
+        webcamService.Init();
 
         //trayIcon.ShowBalloonTip(3000, "Test", "Body", ToolTipIcon.Info);
     }
