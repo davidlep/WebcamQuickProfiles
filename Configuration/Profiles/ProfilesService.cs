@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 
 namespace WebcamQuickProfiles.Configuration.Profiles
@@ -50,7 +51,7 @@ namespace WebcamQuickProfiles.Configuration.Profiles
         {
             if (!Directory.Exists(Paths.ProfilesFolderPath))
             {
-                return null;
+                return Enumerable.Empty<ProfileEntry>().ToList();
             }
 
             var profileEntries = new List<ProfileEntry>();

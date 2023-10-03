@@ -6,33 +6,32 @@ namespace WebcamQuickProfiles.Configuration.Settings
 {
     public class SettingsService
     {
-        private Settings settings = new Settings();
-
-        public Settings GetSettings()
-        {
-            return settings;
-        }
+        public Settings Settings { get; private set; }
 
         public void LoadSettings()
         {
             if (File.Exists(Paths.SettingsFilePath))
             {
                 string json = File.ReadAllText(Paths.SettingsFilePath);
-                settings = JsonSerializer.Deserialize<Settings>(json);
+                Settings = JsonSerializer.Deserialize<Settings>(json);
+                
+                return;
             }
-        }
-
-        public void SaveSettings(Settings settings)
-        {
-            string json = JsonSerializer.Serialize(settings);
-            File.WriteAllText(Paths.SettingsFilePath, json);
-            this.settings = settings;
+                
+            Settings = new Settings();
         }
 
         public void UpdateCurrentProfileId(Guid profileId)
         {
-            settings.CurrentProfileId = profileId;
-            SaveSettings(settings);
+            Settings.CurrentProfileId = profileId;
+            SaveSettings(Settings);
+        }
+        
+        private void SaveSettings(Settings settings)
+        {
+            string json = JsonSerializer.Serialize(settings);
+            File.WriteAllText(Paths.SettingsFilePath, json);
+            Settings = settings;
         }
     }
 }

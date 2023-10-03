@@ -7,16 +7,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WebcamQuickProfiles.AForge;
+using WebcamQuickProfiles.Configuration.Profiles;
 
 namespace WebcamQuickProfiles.Webcam
 {
     public class WebcamService
     {
+        private readonly ProfilesService profilesService;
         public IDictionary<string, ExtendedVideoCaptureDevice> VideoSources { get; set; }
 
-        public WebcamService()
+        public WebcamService(ProfilesService profilesService)
         {
-
+            this.profilesService = profilesService;
         }
 
         public void Init()
@@ -56,6 +58,13 @@ namespace WebcamQuickProfiles.Webcam
             }
 
             return profile;
+        }
+
+        public void ApplyProfile(Guid profileId)
+        {
+            var profile = profilesService.LoadProfile(profileId);
+            var videoSource = this.VideoSources[profile.VideoSourceId];
+            this.ApplyWebcamSettings(videoSource, profile.WebcamSettings);
         }
 
         public void ApplyWebcamSettings(ExtendedVideoCaptureDevice videoSource, WebcamSettings settings)
