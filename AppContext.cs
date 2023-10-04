@@ -21,7 +21,9 @@ internal class AppContext : ApplicationContext
     private readonly SettingsService settingsService;
 
     public IDictionary<Guid, ToolStripMenuItem> ProfileMenuItemsById { get; set; }
-    public ToolStripMenuItem MenuItemSelectProfile { get; set; }
+    public ToolStripMenuItem ProfileMenuItem { get; set; }
+    public ToolStripMenuItem ConfigureMenuItem { get; set; }
+    public ToolStripMenuItem ExitMenuItem { get; set; }
 
     public AppContext(
         WebcamService webcamService, 
@@ -39,60 +41,56 @@ internal class AppContext : ApplicationContext
 
     private void Init()
     {
-        settingsService.LoadSettings();
+        webcamService.Init();
 
         var contextMenu = new ContextMenuStrip();
-        this.ConfigureTrayMenu(contextMenu);
 
+        ConfigureTrayIcon(contextMenu);
+        ConfigureTrayMenu(contextMenu);        
+    }
+
+    void ConfigureTrayIcon(ContextMenuStrip contextMenu)
+    {
         trayIcon = new NotifyIcon(components)
         {
             ContextMenuStrip = contextMenu,
             Icon = new System.Drawing.Icon("icon.ico"),
-            Text = $"Webcam quick profiles",
+            Text = $"Webcam Quick Profiles",
             Visible = true,
         };
 
-        webcamService.Init();
+        trayIcon.DoubleClick += (s, e) => HandleConfigureAction();
 
-        //trayIcon.ShowBalloonTip(3000, "Test", "Body", ToolTipIcon.Info);
+        trayIcon.ShowBalloonTip(3000, "Webcam Quick Profiles", "Configure and select profiles from the tray icon.", ToolTipIcon.Info);
     }
 
     void ConfigureTrayMenu(ContextMenuStrip contextMenu)
     {
-        //TODO Extract in field var
-        var menuItemExit = new ToolStripMenuItem("Exit", null, (sender, e) =>
-        {
-            //TODO Extract method
-            trayIcon.Visible = false;
-            Application.Exit();
-        });
-
-        this.MenuItemSelectProfile = new ToolStripMenuItem("Profiles", null);
-
-        //TODO Extract in field var
-        var menuItemConfigure = new ToolStripMenuItem("Configure", null, (sender, e) =>
-        {
-            //TODO Extract method
-            formsManager.ShowForm<ConfigureForm>();
-            RefreshProfileMenuItemsUIState();
-        });
-        
-        contextMenu.Items.AddRange(new[] { MenuItemSelectProfile, menuItemConfigure, menuItemExit });
-
+        this.ProfileMenuItem = new ToolStripMenuItem("Profiles", null);
         RefreshProfileMenuItemsUIState();
+
+        this.ConfigureMenuItem = new ToolStripMenuItem("Configure", null, (sender, e) => HandleConfigureAction());
+        this.ExitMenuItem = new ToolStripMenuItem("Exit", null, (sender, e) => HandleExitAction());
+
+        contextMenu.Items.AddRange(new[]
+        { 
+            this.ProfileMenuItem, 
+            this.ConfigureMenuItem, 
+            this.ExitMenuItem
+        });
     }
 
     private IDictionary<Guid, ToolStripMenuItem> GetProfilesMenuItems()
     {
         var profileMenuItemsById = new Dictionary<Guid, ToolStripMenuItem>();
         var profiles = profilesService.GetAllProfileEntries();
-        var settings = settingsService.Settings;
+        var settings = settingsService.GetSettings();
 
         foreach (var profile in profiles)
         {
             var menuItem = new ToolStripMenuItem(profile.Name, null, (sender, e) =>
             {
-                HandleProfileMenuItemClick(profile, sender as ToolStripMenuItem);
+                HandleProfileAction(profile);
             });
 
             profileMenuItemsById.Add(profile.Id, menuItem);
@@ -101,20 +99,32 @@ internal class AppContext : ApplicationContext
         return profileMenuItemsById;
     }
 
-    private void HandleProfileMenuItemClick(ProfileEntry profile, ToolStripMenuItem menuItem)
+    private void HandleExitAction()
+    {
+        trayIcon.Visible = false;
+        Application.Exit();
+    }
+
+    private void HandleProfileAction(ProfileEntry profile)
     {
         webcamService.ApplyProfile(profile.Id);
         settingsService.UpdateCurrentProfileId(profile.Id);
+        RefreshProfileMenuItemsUIState();
+    }
+    private void HandleConfigureAction()
+    {
+        formsManager.ShowForm<ConfigureForm>();
         RefreshProfileMenuItemsUIState();
     }
 
     private void RefreshProfileMenuItemsUIState()
     {
         this.ProfileMenuItemsById = GetProfilesMenuItems();
-        this.MenuItemSelectProfile.DropDownItems.Clear();
-        this.MenuItemSelectProfile.DropDownItems.AddRange(ProfileMenuItemsById.Values.ToArray());
+
+        this.ProfileMenuItem.DropDownItems.Clear();
+        this.ProfileMenuItem.DropDownItems.AddRange(ProfileMenuItemsById.Values.ToArray());
         
-        var settings = settingsService.Settings;
+        var settings = settingsService.GetSettings();
         foreach (var profileMenuItem in ProfileMenuItemsById)
         {
             profileMenuItem.Value.Checked = settings.CurrentProfileId == profileMenuItem.Key;

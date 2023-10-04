@@ -23,9 +23,10 @@ internal static class Program
 
         var host = CreateHostBuilder().Build();
 
+        //Monitoring
         Task.Run(() => host.Services.GetService<WebcamMonitor>().MonitorWebcamRunning());
 
-
+        //App context
         Application.Run(host.Services.GetRequiredService<AppContext>());
     }
 

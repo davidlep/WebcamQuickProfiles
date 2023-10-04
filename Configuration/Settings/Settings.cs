@@ -9,5 +9,6 @@ namespace WebcamQuickProfiles.Configuration.Settings
     public class Settings
     {
         public Guid CurrentProfileId { get; set; }
+        public bool AutomaticProfile { get; set; }
     }
 }

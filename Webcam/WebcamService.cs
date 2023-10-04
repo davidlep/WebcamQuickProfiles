@@ -63,6 +63,10 @@ namespace WebcamQuickProfiles.Webcam
         public void ApplyProfile(Guid profileId)
         {
             var profile = profilesService.LoadProfile(profileId);
+
+            if (profile is null)
+                return;
+
             var videoSource = this.VideoSources[profile.VideoSourceId];
             this.ApplyWebcamSettings(videoSource, profile.WebcamSettings);
         }

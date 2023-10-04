@@ -29,27 +29,41 @@
         private void InitializeComponent()
         {
             groupBox2 = new System.Windows.Forms.GroupBox();
+            CB_AutomaticRestore = new System.Windows.Forms.CheckBox();
             BTN_EditProfile = new System.Windows.Forms.Button();
             BTN_DeleteProfile = new System.Windows.Forms.Button();
             BTN_AddProfile = new System.Windows.Forms.Button();
             LB_Profiles = new System.Windows.Forms.ListBox();
             BTN_Close = new System.Windows.Forms.Button();
+            LB_Version = new System.Windows.Forms.Label();
             groupBox2.SuspendLayout();
             SuspendLayout();
             // 
             // groupBox2
             // 
             groupBox2.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            groupBox2.Controls.Add(CB_AutomaticRestore);
             groupBox2.Controls.Add(BTN_EditProfile);
             groupBox2.Controls.Add(BTN_DeleteProfile);
             groupBox2.Controls.Add(BTN_AddProfile);
             groupBox2.Controls.Add(LB_Profiles);
             groupBox2.Location = new System.Drawing.Point(12, 12);
             groupBox2.Name = "groupBox2";
-            groupBox2.Size = new System.Drawing.Size(458, 444);
+            groupBox2.Size = new System.Drawing.Size(458, 423);
             groupBox2.TabIndex = 1;
             groupBox2.TabStop = false;
             groupBox2.Text = "Profiles";
+            // 
+            // CB_AutomaticRestore
+            // 
+            CB_AutomaticRestore.AutoSize = true;
+            CB_AutomaticRestore.Location = new System.Drawing.Point(6, 393);
+            CB_AutomaticRestore.Name = "CB_AutomaticRestore";
+            CB_AutomaticRestore.Size = new System.Drawing.Size(391, 24);
+            CB_AutomaticRestore.TabIndex = 4;
+            CB_AutomaticRestore.Text = "Automaticly apply active profile when camera is in use";
+            CB_AutomaticRestore.UseVisualStyleBackColor = true;
+            CB_AutomaticRestore.CheckedChanged += CB_AutomaticRestore_CheckedChanged;
             // 
             // BTN_EditProfile
             // 
@@ -91,7 +105,7 @@
             LB_Profiles.ItemHeight = 20;
             LB_Profiles.Location = new System.Drawing.Point(6, 26);
             LB_Profiles.Name = "LB_Profiles";
-            LB_Profiles.Size = new System.Drawing.Size(359, 404);
+            LB_Profiles.Size = new System.Drawing.Size(359, 344);
             LB_Profiles.TabIndex = 0;
             LB_Profiles.SelectedIndexChanged += LB_Profiles_SelectedIndexChanged;
             LB_Profiles.Leave += LB_Profiles_Leave;
@@ -108,19 +122,34 @@
             BTN_Close.UseVisualStyleBackColor = true;
             BTN_Close.Click += BTN_Close_Click;
             // 
+            // LB_Version
+            // 
+            LB_Version.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            LB_Version.AutoSize = true;
+            LB_Version.Font = new System.Drawing.Font("Segoe UI", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            LB_Version.Location = new System.Drawing.Point(12, 487);
+            LB_Version.Name = "LB_Version";
+            LB_Version.Size = new System.Drawing.Size(59, 17);
+            LB_Version.TabIndex = 3;
+            LB_Version.Text = "[Version]";
+            // 
             // ConfigureForm
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             ClientSize = new System.Drawing.Size(482, 513);
+            Controls.Add(LB_Version);
             Controls.Add(BTN_Close);
             Controls.Add(groupBox2);
             MinimumSize = new System.Drawing.Size(500, 560);
             Name = "ConfigureForm";
             StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             Text = "Configure";
+            Load += ConfigureForm_Load;
             groupBox2.ResumeLayout(false);
+            groupBox2.PerformLayout();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -130,5 +159,7 @@
         private System.Windows.Forms.Button BTN_EditProfile;
         private System.Windows.Forms.Button BTN_DeleteProfile;
         private System.Windows.Forms.Button BTN_Close;
+        private System.Windows.Forms.Label LB_Version;
+        private System.Windows.Forms.CheckBox CB_AutomaticRestore;
     }
 }

@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
+using WebcamQuickProfiles.Configuration.Settings;
 using WebcamQuickProfiles.GUI;
 
 namespace WebcamQuickProfiles.Webcam
@@ -7,13 +9,16 @@ namespace WebcamQuickProfiles.Webcam
     {
         private bool WebcamRunning = false;
         private readonly WebcamService webcamService;
+        private readonly SettingsService settingsService;
         private readonly FormsManager formsManager;
 
         public WebcamMonitor(
             WebcamService webcamService,
+            SettingsService settingsService,
             FormsManager formsManager)
         {
             this.webcamService = webcamService;
+            this.settingsService = settingsService;
             this.formsManager = formsManager;
         }
 
@@ -21,7 +26,12 @@ namespace WebcamQuickProfiles.Webcam
         {
             while (true)
             {
+                var settings = settingsService.GetSettings();
+
                 await Task.Delay(5 * 1000);
+
+                if (!settings.AutomaticProfile)
+                    continue;
 
                 if (!WebcamRunning && this.webcamService.IsWebcamInUse())
                 {
@@ -31,7 +41,8 @@ namespace WebcamQuickProfiles.Webcam
                     }
 
                     WebcamRunning = true;
-                    //Load profile
+                    ApplyCurrentProfile();
+
                     continue;
                 }
 
@@ -41,6 +52,12 @@ namespace WebcamQuickProfiles.Webcam
                     continue;
                 }
             }
+        }
+
+        private void ApplyCurrentProfile()
+        {
+            var settings = settingsService.GetSettings();
+            webcamService.ApplyProfile(settings.CurrentProfileId);
         }
     }
 }

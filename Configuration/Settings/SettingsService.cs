@@ -6,19 +6,16 @@ namespace WebcamQuickProfiles.Configuration.Settings
 {
     public class SettingsService
     {
-        public Settings Settings { get; private set; }
+        private Settings Settings { get; set; }
 
-        public void LoadSettings()
+        public Settings GetSettings()
         {
-            if (File.Exists(Paths.SettingsFilePath))
+            if (Settings == null)
             {
-                string json = File.ReadAllText(Paths.SettingsFilePath);
-                Settings = JsonSerializer.Deserialize<Settings>(json);
-                
-                return;
+                LoadSettings();
             }
-                
-            Settings = new Settings();
+
+            return Settings;
         }
 
         public void UpdateCurrentProfileId(Guid profileId)
@@ -26,10 +23,34 @@ namespace WebcamQuickProfiles.Configuration.Settings
             Settings.CurrentProfileId = profileId;
             SaveSettings(Settings);
         }
-        
+
+        public void UpdateAutomaticProfile(bool automaticProfile)
+        {
+            Settings.AutomaticProfile = automaticProfile;
+            SaveSettings(Settings);
+        }
+
+        private void LoadSettings()
+        {
+            if (File.Exists(Paths.SettingsFilePath))
+            {
+                string json = File.ReadAllText(Paths.SettingsFilePath);
+                Settings = JsonSerializer.Deserialize<Settings>(json);
+
+                return;
+            }
+
+            Settings = new Settings();
+        }
+
         private void SaveSettings(Settings settings)
         {
-            string json = JsonSerializer.Serialize(settings);
+            var jsonOptions = new JsonSerializerOptions
+            {
+                WriteIndented = true
+            };
+
+            string json = JsonSerializer.Serialize(settings, jsonOptions);
             File.WriteAllText(Paths.SettingsFilePath, json);
             Settings = settings;
         }

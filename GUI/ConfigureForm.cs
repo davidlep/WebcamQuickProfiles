@@ -4,10 +4,12 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WebcamQuickProfiles.Configuration.Profiles;
+using WebcamQuickProfiles.Configuration.Settings;
 using WebcamQuickProfiles.Webcam;
 
 namespace WebcamQuickProfiles.GUI
@@ -16,16 +18,19 @@ namespace WebcamQuickProfiles.GUI
     {
         private readonly WebcamService webcamService;
         private readonly ProfilesService profilesService;
+        private readonly SettingsService settingsService;
         private readonly FormsManager formsManager;
         private IList<ProfileEntry> ProfilesEntries;
 
         public ConfigureForm(
             WebcamService webcamService,
             ProfilesService profilesService,
+            SettingsService settingsService,
             FormsManager formsManager)
         {
             this.webcamService = webcamService;
             this.profilesService = profilesService;
+            this.settingsService = settingsService;
             this.formsManager = formsManager;
             InitializeComponent();
 
@@ -118,6 +123,19 @@ namespace WebcamQuickProfiles.GUI
             this.profilesService.DeleteProfile(selectedProfileId);
 
             RefreshProfilesUIState();
+        }
+
+        private void ConfigureForm_Load(object sender, EventArgs e)
+        {
+            var settings = settingsService.GetSettings();
+
+            LB_Version.Text = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            CB_AutomaticRestore.Checked = settings.AutomaticProfile;
+        }
+
+        private void CB_AutomaticRestore_CheckedChanged(object sender, EventArgs e)
+        {
+            settingsService.UpdateAutomaticProfile(CB_AutomaticRestore.Checked);
         }
     }
 }
