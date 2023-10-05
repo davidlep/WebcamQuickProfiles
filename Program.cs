@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WebcamQuickProfiles.Configuration.Profiles;
@@ -18,6 +19,12 @@ internal static class Program
     [STAThread]
     static void Main()
     {
+        //Allow only a single instance of the app
+        if (Process.GetProcessesByName(Process.GetCurrentProcess().ProcessName).Length > 1)
+        {
+            return;
+        }
+
         // see https://aka.ms/applicationconfiguration.
         ApplicationConfiguration.Initialize();
 

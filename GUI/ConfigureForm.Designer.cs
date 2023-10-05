@@ -56,6 +56,7 @@
             // 
             // CB_AutomaticRestore
             // 
+            CB_AutomaticRestore.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             CB_AutomaticRestore.AutoSize = true;
             CB_AutomaticRestore.Location = new System.Drawing.Point(6, 393);
             CB_AutomaticRestore.Name = "CB_AutomaticRestore";
