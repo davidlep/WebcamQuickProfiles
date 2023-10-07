@@ -31,8 +31,8 @@ namespace WebcamQuickProfiles.Webcam
                 return;
             }
 
-
             VideoSources = GetVideoSources(videoDevices)
+                .Where(x => x.extendedVideoCaptureDevice.VideoCapabilities.Any())
                 .ToDictionary(x => x.name, x => x.extendedVideoCaptureDevice);
 
         }

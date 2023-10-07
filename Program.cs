@@ -50,6 +50,7 @@ internal static class Program
                 services.AddTransient<ProfilesService>();
                 services.AddSingleton<FormsManager>();
                 services.AddSingleton<SettingsService>();
+                services.AddMemoryCache();
             });
     }
 }

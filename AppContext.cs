@@ -2,7 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
 using WebcamQuickProfiles.Configuration.Profiles;
 using WebcamQuickProfiles.Configuration.Settings;
@@ -54,7 +56,7 @@ internal class AppContext : ApplicationContext
         trayIcon = new NotifyIcon(components)
         {
             ContextMenuStrip = contextMenu,
-            Icon = new System.Drawing.Icon("icon.ico"),
+            Icon = GetIcon(),
             Text = $"Webcam Quick Profiles",
             Visible = true,
         };
@@ -129,5 +131,13 @@ internal class AppContext : ApplicationContext
         {
             profileMenuItem.Value.Checked = settings.CurrentProfileId == profileMenuItem.Key;
         }
+    }
+    private Icon GetIcon()
+    {
+        var fileName = $"{Assembly.GetExecutingAssembly().GetName().Name}.icon.ico";
+        var assembly = Assembly.GetExecutingAssembly();
+        var stream = assembly.GetManifestResourceStream(fileName);
+
+        return new Icon(stream);
     }
 }

@@ -28,7 +28,7 @@ namespace WebcamQuickProfiles.Webcam
             {
                 var settings = settingsService.GetSettings();
 
-                await Task.Delay(5 * 1000);
+                await Task.Delay(3 * 1000);
 
                 if (!settings.AutomaticProfile)
                     continue;

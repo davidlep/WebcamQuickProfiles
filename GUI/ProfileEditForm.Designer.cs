@@ -51,7 +51,7 @@
             // 
             BTN_EditSettings.Location = new System.Drawing.Point(12, 154);
             BTN_EditSettings.Name = "BTN_EditSettings";
-            BTN_EditSettings.Size = new System.Drawing.Size(489, 49);
+            BTN_EditSettings.Size = new System.Drawing.Size(483, 49);
             BTN_EditSettings.TabIndex = 1;
             BTN_EditSettings.Text = "Edit webcam settings";
             BTN_EditSettings.UseVisualStyleBackColor = true;
@@ -83,7 +83,7 @@
             GB_Webcam.Controls.Add(CB_Webcams);
             GB_Webcam.Location = new System.Drawing.Point(12, 78);
             GB_Webcam.Name = "GB_Webcam";
-            GB_Webcam.Size = new System.Drawing.Size(489, 70);
+            GB_Webcam.Size = new System.Drawing.Size(483, 70);
             GB_Webcam.TabIndex = 6;
             GB_Webcam.TabStop = false;
             GB_Webcam.Text = "Webcam";
@@ -95,7 +95,7 @@
             CB_Webcams.FormattingEnabled = true;
             CB_Webcams.Location = new System.Drawing.Point(6, 26);
             CB_Webcams.Name = "CB_Webcams";
-            CB_Webcams.Size = new System.Drawing.Size(471, 28);
+            CB_Webcams.Size = new System.Drawing.Size(465, 28);
             CB_Webcams.TabIndex = 0;
             // 
             // GB_ProfileName
