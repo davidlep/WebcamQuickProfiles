@@ -11,11 +11,14 @@ namespace WebcamQuickProfiles.GUI
     public class FormsManager
     {
         private IServiceProvider serviceProvider;
+        private readonly IconService iconService;
+
         public IDictionary<Type, Form> FormInstances { get; set; } = new Dictionary<Type, Form>();
 
-        public FormsManager(IServiceProvider serviceProvider)
+        public FormsManager(IServiceProvider serviceProvider, IconService iconService)
         {
             this.serviceProvider = serviceProvider;
+            this.iconService = iconService;
         }
 
         public T ShowForm<T>(T formInstance = null) where T : Form
@@ -35,6 +38,7 @@ namespace WebcamQuickProfiles.GUI
 
             formInstance.FormClosed += (s, e) => FormInstances[typeof(T)] = null;
             FormInstances[typeof(T)] = formInstance;
+            formInstance.Icon = iconService.GetIcon();
             formInstance.ShowDialog();
 
             return formInstance;

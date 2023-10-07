@@ -21,6 +21,7 @@ internal class AppContext : ApplicationContext
     private readonly ProfilesService profilesService;
     private readonly FormsManager formsManager;
     private readonly SettingsService settingsService;
+    private readonly IconService iconService;
 
     public IDictionary<Guid, ToolStripMenuItem> ProfileMenuItemsById { get; set; }
     public ToolStripMenuItem ProfileMenuItem { get; set; }
@@ -31,13 +32,14 @@ internal class AppContext : ApplicationContext
         WebcamService webcamService, 
         ProfilesService profilesService,
         FormsManager formsManager,
-        SettingsService settingsService)
+        SettingsService settingsService,
+        IconService iconService)
     {
         this.webcamService = webcamService;
         this.profilesService = profilesService;
         this.formsManager = formsManager;
         this.settingsService = settingsService;
-        
+        this.iconService = iconService;
         Init();
     }
 
@@ -56,7 +58,7 @@ internal class AppContext : ApplicationContext
         trayIcon = new NotifyIcon(components)
         {
             ContextMenuStrip = contextMenu,
-            Icon = GetIcon(),
+            Icon = iconService.GetIcon(),
             Text = $"Webcam Quick Profiles",
             Visible = true,
         };
@@ -131,13 +133,5 @@ internal class AppContext : ApplicationContext
         {
             profileMenuItem.Value.Checked = settings.CurrentProfileId == profileMenuItem.Key;
         }
-    }
-    private Icon GetIcon()
-    {
-        var fileName = $"{Assembly.GetExecutingAssembly().GetName().Name}.icon.ico";
-        var assembly = Assembly.GetExecutingAssembly();
-        var stream = assembly.GetManifestResourceStream(fileName);
-
-        return new Icon(stream);
     }
 }
