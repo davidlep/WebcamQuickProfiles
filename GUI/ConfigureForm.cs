@@ -167,8 +167,8 @@ namespace WebcamQuickProfiles.GUI
             if (release is null)
                 return false;
 
-            return 
-                release.TagName == GetCurrentVersion() && 
+            return
+                release.TagName == GetCurrentVersion() &&
                 !release.Prerelease;
         }
 

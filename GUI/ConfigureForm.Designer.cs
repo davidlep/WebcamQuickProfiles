@@ -60,9 +60,9 @@
             CB_AutomaticRestore.AutoSize = true;
             CB_AutomaticRestore.Location = new System.Drawing.Point(6, 393);
             CB_AutomaticRestore.Name = "CB_AutomaticRestore";
-            CB_AutomaticRestore.Size = new System.Drawing.Size(398, 24);
+            CB_AutomaticRestore.Size = new System.Drawing.Size(410, 24);
             CB_AutomaticRestore.TabIndex = 4;
-            CB_AutomaticRestore.Text = "Automaticly apply active profile when webcam is in use";
+            CB_AutomaticRestore.Text = "Automatically apply active profile when webcam is in use";
             CB_AutomaticRestore.UseVisualStyleBackColor = true;
             CB_AutomaticRestore.CheckedChanged += CB_AutomaticRestore_CheckedChanged;
             // 
