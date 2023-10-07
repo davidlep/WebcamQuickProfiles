@@ -19,4 +19,4 @@ The Profiles option enables you to select an active profile. Selecting a profile
 
 ### Configure
 The Configure option opens the configuration menu where you can configure new and existing profiles. 
-On the profile selection dialog, you can use the 🎥 button to open the Windows Camera app, and then click on "Edit Webcam Settings," to have visual feedback of your changes.
+On the profile edit dialog, you can use the 🎥 button to open the Windows Camera app, and then click on "Edit Webcam Settings," to have visual feedback of your changes.
