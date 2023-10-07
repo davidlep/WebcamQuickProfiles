@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
+using System.Security.Policy;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WebcamQuickProfiles.Configuration.Profiles;
@@ -19,20 +20,20 @@ namespace WebcamQuickProfiles.GUI
         private readonly ProfilesService profilesService;
         private readonly SettingsService settingsService;
         private readonly FormsManager formsManager;
-        private readonly IMemoryCache memoryCache;
-
+        private readonly VersionService versionService;
         private IList<ProfileEntry> ProfilesEntries;
 
         public ConfigureForm(
             ProfilesService profilesService,
             SettingsService settingsService,
             FormsManager formsManager,
-            IMemoryCache memoryCache)
+            VersionService versionService)
         {
             this.profilesService = profilesService;
             this.settingsService = settingsService;
             this.formsManager = formsManager;
-            this.memoryCache = memoryCache;
+            this.versionService = versionService;
+
             InitializeComponent();
 
             RefreshProfilesUIState();
@@ -141,68 +142,24 @@ namespace WebcamQuickProfiles.GUI
 
         private async Task SetVersionLabel()
         {
-            if (await IsNewReleaseAvailable())
+            if (await versionService.IsNewReleaseAvailable())
             {
-                var latestRelease = await GetLatestRelease();
+                var latestRelease = await versionService.GetLatestRelease();
                 var boldFont = new Font(LB_Version.Font, FontStyle.Bold);
+
                 LB_Version.Font = boldFont;
-                LB_Version.Text = GetCurrentVersion() + " Click to download new version";
+                LB_Version.Text = versionService.GetCurrentVersion() + " Click to download new version";
                 LB_Version.Click += (sender, e) => LB_Version_Click(latestRelease);
 
                 return;
             }
 
-            LB_Version.Text = GetCurrentVersion();
+            LB_Version.Text = versionService.GetCurrentVersion();
         }
 
         private void LB_Version_Click(Release latestRelease)
         {
-            Process.Start(latestRelease.Url);
-        }
-
-        private async Task<bool> IsNewReleaseAvailable()
-        {
-            var release = await GetLatestRelease();
-
-            if (release is null)
-                return false;
-
-            return
-                release.TagName == GetCurrentVersion() &&
-                !release.Prerelease;
-        }
-
-        private string GetCurrentVersion()
-        {
-            return Assembly.GetExecutingAssembly().GetName().Version.ToString();
-        }
-
-        private async Task<Release> GetLatestRelease()
-        {
-            if (memoryCache.TryGetValue("LatestRelease", out Release latestRelease))
-            {
-                return latestRelease;
-            }
-
-            var client = new GitHubClient(new ProductHeaderValue("WebcamQuickProfiles"));
-
-            try
-            {
-                latestRelease = await client.Repository.Release.GetLatest("davidlep", "WebcamQuickProfiles");
-            }
-            catch (NotFoundException)
-            {
-                latestRelease = null;
-            }
-
-            var cacheEntryOptions = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(24)
-            };
-
-            memoryCache.Set("LatestRelease", latestRelease, cacheEntryOptions);
-
-            return latestRelease;
+            Process.Start(new ProcessStartInfo { FileName = latestRelease.HtmlUrl, UseShellExecute = true });
         }
     }
 }

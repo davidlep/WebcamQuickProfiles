@@ -51,6 +51,7 @@ internal static class Program
                 services.AddSingleton<FormsManager>();
                 services.AddSingleton<SettingsService>();
                 services.AddTransient<IconService>();
+                services.AddTransient<VersionService>();
                 services.AddMemoryCache();
             });
     }
