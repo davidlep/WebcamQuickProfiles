@@ -4,8 +4,7 @@ Simple application that runs in the background (as a tray application) and enabl
 
 This app uses the [AForge.NET](https://github.com/andrewkirillov/AForge.NET) library ([with community modifications](https://github.com/andrewkirillov/AForge.NET/pull/27)).
 
-![ConfigUIScreen](https://github.com/davidlep/WebcamQuickProfiles/assets/10562856/c0ebbe22-9175-4e6c-8036-65a16634e6a9)
-
+![image](https://github.com/davidlep/WebcamQuickProfiles/assets/10562856/d2128454-cf69-4d05-80d1-036c6a104b4f)
 
 ## Functionalities
 
