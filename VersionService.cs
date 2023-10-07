@@ -44,7 +44,7 @@ namespace WebcamQuickProfiles
             {
                 latestRelease = (await client.Repository.Release.GetAll("davidlep", "WebcamQuickProfiles"))[0];
             }
-            catch (NotFoundException)
+            catch (Exception)
             {
                 latestRelease = null;
             }

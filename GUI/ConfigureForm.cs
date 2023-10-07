@@ -142,6 +142,8 @@ namespace WebcamQuickProfiles.GUI
 
         private async Task SetVersionLabel()
         {
+            LB_Version.Text = versionService.GetCurrentVersion();
+
             if (await versionService.IsNewReleaseAvailable())
             {
                 var latestRelease = await versionService.GetLatestRelease();
@@ -153,8 +155,6 @@ namespace WebcamQuickProfiles.GUI
 
                 return;
             }
-
-            LB_Version.Text = versionService.GetCurrentVersion();
         }
 
         private void LB_Version_Click(Release latestRelease)
