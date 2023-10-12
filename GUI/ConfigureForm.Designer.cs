@@ -145,7 +145,7 @@
             MinimumSize = new System.Drawing.Size(500, 560);
             Name = "ConfigureForm";
             StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            Text = "W";
+            Text = "Configure";
             Load += ConfigureForm_Load;
             groupBox2.ResumeLayout(false);
             groupBox2.PerformLayout();
