@@ -72,7 +72,7 @@
             BTN_EditProfile.Location = new System.Drawing.Point(374, 68);
             BTN_EditProfile.Name = "BTN_EditProfile";
             BTN_EditProfile.Size = new System.Drawing.Size(78, 36);
-            BTN_EditProfile.TabIndex = 3;
+            BTN_EditProfile.TabIndex = 2;
             BTN_EditProfile.Text = "✏️";
             BTN_EditProfile.UseVisualStyleBackColor = true;
             BTN_EditProfile.Click += BTN_EditProfile_Click;
@@ -83,7 +83,7 @@
             BTN_DeleteProfile.Location = new System.Drawing.Point(374, 110);
             BTN_DeleteProfile.Name = "BTN_DeleteProfile";
             BTN_DeleteProfile.Size = new System.Drawing.Size(78, 36);
-            BTN_DeleteProfile.TabIndex = 2;
+            BTN_DeleteProfile.TabIndex = 3;
             BTN_DeleteProfile.Text = "🗑️";
             BTN_DeleteProfile.UseVisualStyleBackColor = true;
             BTN_DeleteProfile.Click += BTN_DeleteProfile_Click;
@@ -118,7 +118,7 @@
             BTN_Close.Location = new System.Drawing.Point(376, 472);
             BTN_Close.Name = "BTN_Close";
             BTN_Close.Size = new System.Drawing.Size(94, 29);
-            BTN_Close.TabIndex = 2;
+            BTN_Close.TabIndex = 5;
             BTN_Close.Text = "Close";
             BTN_Close.UseVisualStyleBackColor = true;
             BTN_Close.Click += BTN_Close_Click;
@@ -145,7 +145,7 @@
             MinimumSize = new System.Drawing.Size(500, 560);
             Name = "ConfigureForm";
             StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            Text = "Configure";
+            Text = "W";
             Load += ConfigureForm_Load;
             groupBox2.ResumeLayout(false);
             groupBox2.PerformLayout();
