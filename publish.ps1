@@ -2,8 +2,9 @@ $ErrorActionPreference = "Stop"
 
 # Read version and target framework from csproj
 $csproj = [xml](Get-Content "WebcamQuickProfiles.csproj")
-$Version = $csproj.Project.PropertyGroup.Version
-$TargetFramework = $csproj.Project.PropertyGroup.TargetFramework
+$propGroup = $csproj.Project.PropertyGroup | Where-Object { $_.Version }
+$Version = $propGroup.Version.Trim()
+$TargetFramework = $propGroup.TargetFramework.Trim()
 
 $OutputDir = ".\publish"
 if (-not (Test-Path $OutputDir)) { mkdir $OutputDir }
