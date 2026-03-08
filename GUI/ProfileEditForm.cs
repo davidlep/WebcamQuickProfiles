@@ -19,6 +19,7 @@ namespace WebcamQuickProfiles.GUI
     {
         private readonly WebcamService webcamService;
         private readonly ProfilesService profilesService;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Profile FormProfile { get; set; }
 
         public ProfileEditForm(
