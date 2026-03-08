@@ -37,7 +37,11 @@ namespace WebcamQuickProfiles.GUI
 
         private void BTN_EditSettings_Click(object sender, EventArgs e)
         {
-            var videoSource = this.webcamService.VideoSources[CB_Webcams.SelectedItem.ToString()];
+            var selectedWebcam = CB_Webcams.SelectedItem?.ToString();
+            if (selectedWebcam is null || !this.webcamService.VideoSources.ContainsKey(selectedWebcam))
+                return;
+
+            var videoSource = this.webcamService.VideoSources[selectedWebcam];
             if (FormProfile is not null)
             {
                 this.webcamService.ApplyWebcamSettings(videoSource, FormProfile.WebcamSettings);
@@ -59,6 +63,17 @@ namespace WebcamQuickProfiles.GUI
                 return;
             }
 
+            var selectedVideoSourceId = CB_Webcams.SelectedItem?.ToString();
+            if (selectedVideoSourceId is null || !this.webcamService.VideoSources.ContainsKey(selectedVideoSourceId))
+            {
+                MessageBox.Show(
+                    "Selected webcam is not available",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return;
+            }
+
             if (FormProfile is null)
             {
                 FormProfile = new Profile
@@ -71,7 +86,6 @@ namespace WebcamQuickProfiles.GUI
             FormProfile.Name = TB_ProfileName.Text;
 
             //Video source (webcam)
-            var selectedVideoSourceId = CB_Webcams.SelectedItem.ToString();
             FormProfile.VideoSourceId = selectedVideoSourceId;
 
             //Settings
@@ -85,11 +99,13 @@ namespace WebcamQuickProfiles.GUI
 
         private void ProfileEditForm_Load(object sender, EventArgs e)
         {
+            webcamService.RefreshDevices();
             CB_Webcams.Items.AddRange(webcamService.VideoSources.Keys.ToArray());
 
             if (FormProfile is null)
             {
-                CB_Webcams.SelectedItem = CB_Webcams.Items[0];
+                if (CB_Webcams.Items.Count > 0)
+                    CB_Webcams.SelectedItem = CB_Webcams.Items[0];
                 return;
             }
 

@@ -23,6 +23,11 @@ namespace WebcamQuickProfiles.Webcam
 
         public void Init()
         {
+            RefreshDevices();
+        }
+
+        public void RefreshDevices()
+        {
             var videoDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
 
             if (videoDevices.Count == 0)
@@ -34,7 +39,6 @@ namespace WebcamQuickProfiles.Webcam
             VideoSources = GetVideoSources(videoDevices)
                 .Where(x => x.extendedVideoCaptureDevice.VideoCapabilities.Any())
                 .ToDictionary(x => x.name, x => x.extendedVideoCaptureDevice);
-
         }
 
         public WebcamSettings GetWebcamSettings(ExtendedVideoCaptureDevice videoSource)
@@ -62,9 +66,14 @@ namespace WebcamQuickProfiles.Webcam
 
         public void ApplyProfile(Guid profileId)
         {
+            RefreshDevices();
+
             var profile = profilesService.LoadProfile(profileId);
 
             if (profile is null)
+                return;
+
+            if (!this.VideoSources.ContainsKey(profile.VideoSourceId))
                 return;
 
             var videoSource = this.VideoSources[profile.VideoSourceId];
