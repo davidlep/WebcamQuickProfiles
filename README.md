@@ -1,4 +1,4 @@
-# Webcam Quick Profiles (for Windows)
+  # <img width="30" height="30" alt="icon" src="https://github.com/user-attachments/assets/75e019ff-c9bb-4493-a08a-6f6e8878cc3b" /> Webcam Quick Profiles (for Windows)
 
 Simple application that runs in the background (as a tray application) and enables you to store webcam profiles (presets of webcam settings) and restore them manually or automatically when the webcam is in use. This application solves the issue where modifications made to the webcam's settings are reverted to their default values after each webcam usage.
 
