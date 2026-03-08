@@ -12,7 +12,7 @@ Write-Host "Publishing v$Version (TargetFramework: $TargetFramework)..." -Foregr
 
 dotnet restore
 dotnet build --configuration Release --no-restore
-dotnet publish --configuration Release --self-contained -r win-x64 --no-build
+dotnet publish --configuration Release --no-restore -r win-x64
 
 $source = "bin\Release\$TargetFramework\win-x64\publish\WebcamQuickProfiles.exe"
 $target = "$OutputDir\WebcamQuickProfiles`_$Version.exe"
